@@ -23,6 +23,9 @@ let partition = d3.partition();
 let x = d3.scaleLinear()
     .range([0, 2 * Math.PI]);
 
+console.log(x.domain())
+
+
 let y = d3.scaleLinear()
     .range([0, radius]);
 
@@ -47,12 +50,13 @@ d3.csv("./flare.csv", function(error, data){
 	});
 
 	partition(_root)
-	console.log(_root)
+	// console.log(_root)
 
 	canvas.selectAll("path")
 	.data(_root.descendants())
 	.enter()
 	.append("path")
+	.attr("stroke","#fff")
 	.attr("d",
 		d3.arc()
 		    .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x0))); })
@@ -61,10 +65,33 @@ d3.csv("./flare.csv", function(error, data){
 		    .outerRadius(function(d) { return Math.max(0, y(d.y1)); })
     )
 	.style("fill", function(d) { return color((d.children ? d : d.parent).data.name); })
-	.on("click", function(d){
+	.on("click", function(node){
+
+
+		console.log(canvas)
+
 		canvas.transition()
 			.duration(750)
-			.tween()
+			.tween("scale",function() {
+				console.log(x.domain())
+
+				let xd = d3.interpolate(x.domain(), [node.x0, node.x1]),
+				    yd = d3.interpolate(y.domain(), [node.y0, 1]),
+				    yr = d3.interpolate(y.range(), [node.y0 ? 20 : 0, radius]);
+
+		        return function(t) { 
+		        	x.domain(xd(t)); 
+		        	y.domain(yd(t)).range(yr(t)); 
+		        };
+			})
+			.selectAll("path")
+			.attrTween("d", function(d) {
+				console.log("d  ",d)
+
+				return function() { 
+					return arc(d); 
+				}; 
+			});
 
 	})
 	.append("title")
