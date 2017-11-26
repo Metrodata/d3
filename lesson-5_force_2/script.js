@@ -32,7 +32,10 @@ let node = svg.selectAll("circle").data(nodeData)
     .on("drag",dragged)
     .on("end",dragended));
 
-simulation.on("tick",ticked);
+simulation.on("tick",function(){
+	node.attr("cx", function(d){ return d.x;})
+		.attr("cy", function(d){ return d.y;})
+});
 
 function dragstarted(d){
 	simulation.restart();
@@ -50,11 +53,6 @@ function dragended(d){
 	d.fx = null;
 	d.fy = null;
 	simulation.alphaTarget(0.1);
-}
-
-function ticked(){
-	node.attr("cx", function(d){ return d.x;})
-	 	 .attr("cy", function(d){ return d.y;})
 }
 
 

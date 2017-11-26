@@ -32,8 +32,7 @@ d3.json("./data.json", function(error, data){
 			link.attr("x1", function(d) { 
 				// console.log(d)
 				return d.source.x;
-			})
-		        .attr("y1", function(d) { return d.source.y; })
+			}).attr("y1", function(d) { return d.source.y; })
 		        .attr("x2", function(d) { return d.target.x; })
 		        .attr("y2", function(d) { return d.target.y; });
 
@@ -44,9 +43,6 @@ d3.json("./data.json", function(error, data){
 
 	simulation_1.force("linkss")
 		.links(data.links)
-
-
-		// .force("change");//?
 
 	let link = canvas.append("g")
 		.attr("class", "links")
