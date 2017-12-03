@@ -8,24 +8,15 @@ let svg = d3.select("body")
 			.append("svg")
 			.attr("id","canvas_1")
 			.attr("width",width)
-			.attr("height",height);
+			.attr("height",height)
+			.attr("font-family","sans-serif")
+			.attr("font-size",10)
+			.attr("text-anchor","middle");
 
-let svg_2 = d3.select("body")
-			.append("svg")
-			.attr("id","canvas_2")
-			.attr("width",width)
-			.attr("height",height);
 
 let format = d3.format(",d");
 
 let color = d3.scaleOrdinal(d3.schemeCategory20c);
-
-
-let button = d3.select("button").on("click",function(){
-	svg_2.append("circle").attr("r",20).attr("fill",function(){
-		return color(document.getElementsByTagName('input')[0].value)
-	}).attr("transform","translate(24,24)")
-})
 
 let pack = d3.pack()
     .size([width, height])
@@ -43,6 +34,7 @@ d3.csv("./data.csv", function(d) {
 			// console.log(d.data)
 			//console.log(d.data.id)
 			let id = d.data.id
+
 			if(id){
 				let i = id.lastIndexOf(".");
 			    d.id = id;
@@ -61,10 +53,26 @@ d3.csv("./data.csv", function(d) {
 		.attr("id", function(d) { return d.id; })
 		.attr("r", function(d) { return d.r; })
 		.style("fill", function(d) {
-			console.log(d.package)
+			console.log(d)
 			return color(d.package); 
 		});
 
+	node.append("clipPath")
+		.attr("id", function(d) { return "clip-" + d.id; })
+		.append("use")
+		.attr("href", function(d) { return "#" + d.id; });
+
+	node.append("text")
+		.attr("clip-path", function(d) { return "url(#clip-" + d.id + ")"; })
+		.selectAll("tspan")
+		.data(function(d) { return d.class.split(/(?=[A-Z][^A-Z])/g); })
+		.enter().append("tspan")
+		.attr("x", 0)
+		.attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
+		.text(function(d) { return d; });
+
+	node.append("title")
+		.text(function(d) { return d.id + "\n" + format(d.value); });
 })
 
 }

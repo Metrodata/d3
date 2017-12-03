@@ -1,0 +1,26 @@
+{
+  "nodes": [
+    {"name": "A"},
+    {"name": "B"},
+    {"name": "C"},
+    {"name": "D"},
+    {"name": "E"},
+    {"name": "F"},
+    {"name": "G"},
+    {"name": "H"},
+    {"name": "I"},
+    {"name": "J"}
+  ],
+  "links": [
+    {"source_id": 0,"target_id": 1},
+    {"source_id": 0,"target_id": 4},
+    {"source_id": 0,"target_id": 5},
+    {"source_id": 1,"target_id": 2},
+    {"source_id": 1,"target_id": 6},
+    {"source_id": 2,"target_id": 3},
+    {"source_id": 7,"target_id": 2},
+    {"source_id": 3,"target_id": 4},
+    {"source_id": 3,"target_id": 8},
+    {"source_id": 4,"target_id": 9}
+  ]
+}
