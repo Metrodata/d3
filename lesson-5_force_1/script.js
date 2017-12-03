@@ -7,7 +7,7 @@ let canvas = d3.select("body").append("svg").attr("width",width).attr("height",h
 
 let simulation_1 = d3.forceSimulation()
 					.force("linkss", d3.forceLink().id(function(d) { 
-						console.log("linkss    ",d)
+						// console.log("linkss    ",d)
 						return d.name; 
 					}))//?
 					.force("charge", d3.forceManyBody().strength(-30))//?
@@ -19,8 +19,8 @@ let simulation_2 = d3.forceSimulation()
 
 let color = d3.scaleOrdinal(d3.schemeCategory20);
 
-console.log(simulation_1)
-console.log(simulation_2)
+// console.log(simulation_1)
+// console.log(simulation_2)
 
 
 d3.json("./data.json", function(error, data){
@@ -30,29 +30,57 @@ d3.json("./data.json", function(error, data){
 	simulation_1.nodes(data.nodes)
 		.on("tick",function(){
 			link.attr("x1", function(d) { 
-				// console.log(d)
 				return d.source.x;
-			}).attr("y1", function(d) { return d.source.y; })
-		        .attr("x2", function(d) { return d.target.x; })
-		        .attr("y2", function(d) { return d.target.y; });
+			}).attr("y1", function(d) { 
+				return d.source.y; 
+			}).attr("x2", function(d) { 
+				return d.target.x; 
+	        }).attr("y2", function(d) { 
+	        	return d.target.y; 
+	        });
 
 		    node.attr("cx", function(d) { return d.x; })
 		        .attr("cy", function(d) { return d.y; })
 		})
-
-
 	simulation_1.force("linkss")
 		.links(data.links)
 
+
+
+
+
+	// let link = canvas.append("g")
+	// 	.attr("class", "links")
+	// 	.selectAll("line")
+	// 	.data(data.links)
+	// 	.enter()
+	// 	.append("line")
+	// 	.attr("stroke-width", function(d) { 
+	// 		console.log(d)
+	// 		return Math.sqrt(d.value); 
+	// 	})
+	// 	.attr("stroke","#999")
+	// 	.attr("opacity",.4);
+
 	let link = canvas.append("g")
-		.attr("class", "links")
-		.selectAll("line")
+		.attr("class", "link")
+		.selectAll(".link")
 		.data(data.links)
 		.enter()
 		.append("line")
-		.attr("stroke-width", function(d) { return Math.sqrt(d.value); })
+		.attr("x1",300)
+		.attr("y1", 0)
+		.attr('x2', 0)
+		.attr("y2", 300)
+		.attr("stroke-width", function(d) { 
+			console.log(d)
+			return Math.sqrt(d.value); 
+		})
 		.attr("stroke","#999")
 		.attr("opacity",.4);
+
+
+
 
 	let node = canvas.append("g")
 		.attr("class", "nodes")
@@ -61,7 +89,9 @@ d3.json("./data.json", function(error, data){
 		.enter()
 		.append("circle")
 		.attr("r", 6)
-		.attr("fill", function(d) { return color(d.group) });
+		.attr("fill", function(d) { 
+			return color(d.group) 
+		});
 
 	node.append("title")
 		.text(function(d) { return d.id; });
