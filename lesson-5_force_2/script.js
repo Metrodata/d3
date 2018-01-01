@@ -20,7 +20,7 @@ let simulation = d3.forceSimulation(nodeData); //Initializing Simulation; nodes 
 let xAxisForce = d3.forceX().strength(5).x(width/2);
 let yAxisForce = d3.forceY().strength(5).y(height/2);
 
-simulation.alphaDecay(0.01).force("xAxis",xAxisForce).force("yAxis",yAxisForce); //设置了alphaDecay()
+simulation.alphaDecay(0.6).velocityDecay(0.4).force("xAxis",xAxisForce).force("yAxis",yAxisForce); //设置了alphaDecay()
 
 //Define the node
 let node = svg.selectAll("circle").data(nodeData)
