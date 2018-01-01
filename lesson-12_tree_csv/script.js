@@ -66,7 +66,6 @@ d3.csv("data.csv", function(error, data) {
 					}).attr("cx",function(d){
 						return d.y
 					})
-
 });
 
 })()}
