@@ -22,13 +22,13 @@ let svg = d3.select("body")
 let color = d3.scaleOrdinal(d3.schemeCategory10)
 
 let simulation =  d3.forceSimulation()
-					.force("x",d3.forceX().strength(0.01))
-					.force("y",d3.forceY().strength(0.01))
-					// .velocityDecay(0.1)
-					// .alphaDecay(0.01)
+					.force("x",d3.forceX().strength(0.02))
+					.force("y",d3.forceY().strength(0.02))
+					.velocityDecay(0.1)
+					.alphaDecay(0.01)
 					.force("collide",d3.forceCollide(function(d){
 						return radiusScale(d.sales)+3;
-					}))
+					}).strength(0.8))
 
 let radiusScale = d3.scaleSqrt()
 					.domain([1,300])
