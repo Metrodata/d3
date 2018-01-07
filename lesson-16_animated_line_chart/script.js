@@ -1,9 +1,9 @@
 window.onload = function(){(function(){
 let m = {
 	top: 20, 
-	left: 20,
+	left: 30,
 	bottom: 30,
-	right: 20
+	right: 40
 },
     w = 960 - m.left - m.right,
     h = 500 - m.top - m.bottom;
@@ -22,10 +22,16 @@ let toolFunction = {
 	parse : d3.timeParse("%b %Y"),
 	x : d3.scaleTime().range([0, w - 60]),
 	y : d3.scaleLinear().range([h / 4 - 20,0]),	
-	line : d3.area().x(function(d){
+	line : d3.line().x(function(d){
 			// console.log("line    ",d)
 				return toolFunction.x(d.date)
 			}).y(function(d){
+				return toolFunction.y(d.price)
+			}).curve(d3.curveLinear),
+	area : d3.area().x(function(d){
+			// console.log("line    ",d)
+				return toolFunction.x(d.date)
+			}).y0(function(d){
 				return toolFunction.y(d.price)
 			}).curve(d3.curveLinear),
 }
@@ -77,14 +83,20 @@ toolFunction.x.domain([
 				return d.values[d.values.length - 1].date; 
 			})
 		]);
-// 设置价格比例尺
+// 设置价格比例尺_1
 toolFunction.y.domain([0,d3.max(data,function(companyData){
 			return companyData.maxPrice
 		})]);
 
+toolFunction.area.y1(toolFunction.y(0))
+
 // 处理每一个公司的数据
 g.each(function(d){
 	let element = d3.select(this);
+
+
+	element.append("path")
+			.attr("class", "area");
 
 	element.append("path")
 			.attr("class", "line");
@@ -100,7 +112,6 @@ g.each(function(d){
 			.attr("x", 12)
 			.attr("dy", ".31em")
 			.style("font-family", "Helvetica Neue, Helvetica")
-			.text(d.key);
 
 	let k = 1,
 		n = data[0].values.length;
@@ -111,9 +122,19 @@ g.each(function(d){
 
 			let element = d3.select(this);
 
-			toolFunction.y.domain([0, d.maxPrice]);
+			// 设置价格比例尺_2
+			// toolFunction.y.domain([0, d.maxPrice]);
 
-			element.select("path")
+			element.select(".area")
+					.attr("stroke","none")
+					.attr("fill",function(d){
+						return toolFunction.color(d.key)
+					})
+					.attr("d", function(d) { 
+						return toolFunction.area(d.values.slice(0, k + 1)); //从0开始增加数据，并覆盖之前的线图
+					});
+
+			element.select(".line")
 					.attr("stroke","#000")
 					.attr("fill","none")
 					.attr("stroke-width", "2px")
@@ -121,13 +142,19 @@ g.each(function(d){
 						return toolFunction.line(d.values.slice(0, k + 1)); //从0开始增加数据，并覆盖之前的线图
 					});
 
+
 			element.selectAll("circle")
-					.attr("transform", function(d) { 
-						return "translate(" + toolFunction.x(d.values[k].date) + "," + toolFunction.y(d.values[k].price) + ")"; 
+					.data(function(d) { 
+						return [d.values[k]]
+					}).attr("transform", function(d) { 
+						return "translate(" + toolFunction.x(d.date) + "," + toolFunction.y(d.price) + ")"; 
 					});
 
 
 			element.selectAll("text")
+					.text(function(d){
+						return d.key + " " + d.values[k].price
+					})
 					.attr("transform", function(d) { 
 						return "translate(" + toolFunction.x(d.values[k].date) + "," + toolFunction.y(d.values[k].price) + ")"; 
 					});

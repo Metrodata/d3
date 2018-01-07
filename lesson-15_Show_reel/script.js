@@ -121,12 +121,6 @@ d3.csv("data.csv", function(data) {
 				return y(d.price)
 			}).curve(d3.curveLinear);
 
-
-
-
-
-
-
 		let timer = d3.timer(function() {
 			console.log("hi")
 
